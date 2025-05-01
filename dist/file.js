@@ -1,4 +1,5 @@
 import {exec} from "child_process";
+import * as fs from "fs/promises";
 
 /**
    tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
@@ -31,3 +32,13 @@ export function zip(folder){
 }
 
 export function unzip(archive){}
+
+async function getUserFile(userFile){
+    const data = await fs.readFile(userFile, "utf8");
+    console.log(data);
+}
+
+async function setUserFile(userFile, data){
+    await fs.writeFile(userFile, data);
+}
+
