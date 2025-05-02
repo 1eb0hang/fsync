@@ -7,7 +7,7 @@ const commands = {
     "config":undefined
 }
 
-function pull(){
+async function pull(){
     // say we have to download vault from 192.168.8.107:9000/vault.zip
     const userFile = await getUserFile("");
 }

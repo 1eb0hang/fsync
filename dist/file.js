@@ -1,5 +1,6 @@
 import {exec} from "child_process";
 import * as fs from "fs/promises";
+import * as path from "path";
 
 /**
    tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
@@ -48,12 +49,28 @@ export function unzip(archive){
     })
 }
 
+
 export async function getUserFile(userFile){
-    const data = await fs.readFile(userFile, "utf8");
-    return data;
+    let data;
+    try{
+	data = await fs.readFile(userFile, "utf8");
+    }catch(err){
+	if(typeof err == "object" && err.code=="ENOENT"){
+	    console.log("Error: file not found\nCreating user file");
+	    createUserFile(userFile)
+	}else{
+	    console.log(err);
+	}
+    }
+    //return data;
 }
 
 export async function setUserFile(userFile, data){
     await fs.writeFile(userFile, data);
 }
 
+
+function createUserFile(filepath){
+    fs.mkdir(path.dirname(filepath), {recursive:true});
+    fs.writeFile(filepath, JSON.stringify({}));
+}

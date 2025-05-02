@@ -1,11 +1,12 @@
-//import handleCommand from "./command.js";
+import handleCommand from "./command.js";
+import {getUserFile, setUserFile} from "./file.js";
 
-
-// function main(args){
-//     //const exitCode = handleCommand(args); // 
-//     console.log(http.STATUS_CODES[102]);
-//     return 0;
-// }
+function main(args){
+    const exitCode = handleCommand(args); // 
+    return exitCode;
+}
 
 // const args = process.argv.splice(2);
 // process.exit(main(args));
+
+getUserFile("./user/uesrFile.json");
