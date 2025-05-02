@@ -1,3 +1,4 @@
+## README - fsync
 
 tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
   -> tar -cf vault.zip vault/
@@ -35,3 +36,18 @@ user file:
   }
 }
 ```
+
+### example
+
+``` shell
+vsync pull vault
+```
+
+1. get args ([pull, vault])
+2. if userfile not exist -> create usercer file
+3. getUserfile
+4. if "vault" not in userFile -> exit(error)
+5. if "vault" not in repo -> exit(error)
+6. download vault.zip
+7. unzip vault.zip -> vault
+8. move vault to "destination"

@@ -10,12 +10,12 @@ import * as fs from "fs/promises";
    -> tar -xf vault.zip
 */
 
-const folder = "~/Documents/vault/vault_01/";
-const archive = "vault_01.zip";
+// const folder = "~/Documents/vault/vault_01/";
+// const archive = "vault_01.zip";
 
 export function zip(folder){
 
-    let exitCode = exec(`tar`, (error, stdout, stderr)=>{
+    let exitCode = exec(`tar -cf ${folder}.zip ${folder}`, (error, stdout, stderr)=>{
 	if(error){
 	    console.log(error.message);
 	    return 1;
@@ -31,14 +31,29 @@ export function zip(folder){
     })
 }
 
-export function unzip(archive){}
+export function unzip(archive){
+    let exitCode = exec(`tar -xf ${folder}.zip`, (error, stdout, stderr)=>{
+	if(error){
+	    console.log(error.message);
+	    return 1;
+	}
 
-async function getUserFile(userFile){
-    const data = await fs.readFile(userFile, "utf8");
-    console.log(data);
+	if(stderr){
+	    //console.error("stderr: " + stderr);
+	    return stderr;
+	}
+
+	console.log(`stdout: \n${stdout}`);
+	return 0;
+    })
 }
 
-async function setUserFile(userFile, data){
+export async function getUserFile(userFile){
+    const data = await fs.readFile(userFile, "utf8");
+    return data;
+}
+
+export async function setUserFile(userFile, data){
     await fs.writeFile(userFile, data);
 }
 
