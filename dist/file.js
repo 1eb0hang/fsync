@@ -58,17 +58,19 @@ export async function getUserFile(userFile){
 	if(typeof err == "object" && err.code=="ENOENT"){
 	    console.log("Error: file not found\nCreating user file");
 	    createUserFile(userFile)
+	    data = {};
 	}else{
 	    console.log(err);
+	    data = undefined;
 	}
     }
-    //return data;
+    return data;
 }
 
 export async function setUserFile(userFile, data){
+    // TODO: check if path to userfile exists
     await fs.writeFile(userFile, data);
 }
-
 
 function createUserFile(filepath){
     fs.mkdir(path.dirname(filepath), {recursive:true});

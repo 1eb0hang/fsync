@@ -9,7 +9,10 @@ const commands = {
 
 async function pull(){
     // say we have to download vault from 192.168.8.107:9000/vault.zip
-    const userFile = await getUserFile("");
+    const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
+    const userData = await getUserFile(userFile);
+    console.log(userData);
+    return 0;
 }
 
 
@@ -19,5 +22,6 @@ async function pull(){
  * @returns exit status code of command
  */
 export default async function handleCommand(args){
-    
+    const exitCode = await pull();
+    return exitCode;
 }
