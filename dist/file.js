@@ -32,6 +32,8 @@ export function zip(folder){
     })
 }
 
+fs.
+
 export function unzip(archive){
     let exitCode = exec(`tar -xf ${folder}.zip`, (error, stdout, stderr)=>{
 	if(error){

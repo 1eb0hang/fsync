@@ -1,4 +1,5 @@
 import handleCommand from "./command.js";
+import 
 
 async function main(args){
     console.log("something");
@@ -8,4 +9,5 @@ async function main(args){
 
 const args = process.argv.splice(2);
 process.exit(await main(args));
+
 

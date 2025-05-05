@@ -3,8 +3,14 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
+// import * as http from "http";
+// import * as fs from "fs";
+// import * as path from "path";
+// import * as url from "url";
+
 const PORT = 8000;
 const ROOT_DIR = path.resolve(__dirname, 'shared');
+
 
 const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url);
