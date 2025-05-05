@@ -1,6 +1,7 @@
+import * as fs from "fs/promises";
 import * as path from "path";
 
-import {getUserFile, setUserFile} from "./file.js";
+import {getUserFile, setUserFile, zip, unzip} from "./file.js";
 import downloadFile from "./fileDownload.js";
 
 const commands = {
@@ -11,6 +12,7 @@ const commands = {
 }
 
 async function pull(args){
+    let exitCode = 0;
     // say we have to download vault from 192.168.8.107:9000/vault.zip
     const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
     const userData = await getUserFile(userFile);
@@ -23,13 +25,17 @@ async function pull(args){
         console.log(`No value found maching value \"${file}\"`);
         return 1;
     }
-    //http://127.0.0.1:8000/web-term.tar.gz
-    // downloadFile(
-    //     `http://127.0.0.1:8000/${userData.file[file].url}`// ill change it to be dynamic
-    // ); 
-    await downloadFile(new URL(userData.file[file].url,"http://127.0.0.1:8000/"));
+    exitCode = await downloadFile(
+        new URL(userData.file[file].url[0],"http://127.0.0.1:8000/"),
+        userData.file[file].name
+    );
 
-    return 0;
+    exitCode = await unzip(path.join(".", userData.file[file].name));
+    // exitCode += await fs.rename(
+    //     path.join(".", "download"), 
+    //     path.join(userData.file[file].destination, file));
+
+    return exitCode;
 }
 
 

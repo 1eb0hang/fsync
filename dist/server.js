@@ -49,6 +49,7 @@ const server = http.createServer((req, res) => {
             res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
 
             const mimeType = getMimeType(fileName);
+            console.log(mimeType);
             res.setHeader('Content-Type', mimeType);
 
             const fileStream = fs.createReadStream(safePath);

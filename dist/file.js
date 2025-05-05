@@ -36,21 +36,25 @@ export function zip(folder, archiveName = undefined){
 }
 
 
-export function unzip(archive){
-    let exitCode = exec(`tar -xf ${folder}.zip`, (error, stdout, stderr)=>{
-	if(error){
-	    console.log(error.message);
-	    return 1;
-	}
+export async function unzip(archive){
+	console.log(`Executing: tar -xf ${archive}`);
+	
+	return new Promise((resolve, reject)=>{
+    	let exitCode = exec(`tar -xf ${archive}`, (error, stdout, stderr)=>{
+		if(error){
+		    console.log(error.message);
+		    reject(1);
+		}
 
-	if(stderr){
-	    //console.error("stderr: " + stderr);
-	    return stderr;
-	}
+		if(stderr){
+		    console.error("stderr: " + stderr);
+		    reject(1);
+		}
 
-	console.log(`stdout: \n${stdout}`);
-	return 0;
-    })
+		console.log(`stdout: \n${stdout}`);
+		resolve(exitCode);
+    	})
+	});
 }
 
 

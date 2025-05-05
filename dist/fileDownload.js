@@ -2,7 +2,7 @@ import * as http from "http"
 import * as fs from "fs"
 import * as url from "url"
 
-export default function downloadFile(fileUrl, defaultFilename="dowload"){
+export default function downloadFile(fileUrl, defaultFilename="download"){
 		
 	return new Promise((resolve, reject)=>{
 		let exitCode = 0;
@@ -11,7 +11,8 @@ export default function downloadFile(fileUrl, defaultFilename="dowload"){
 
 		// Make a request to the file URL
 		http.get(parsedUrl, res =>download(res, defaultFilename, {resolve, reject})).on("error", (error)=>{
-			console.error("Request faild:", error);
+			console.error("Request failed:", error);
+			reject(1);
 		});
 	})
 } 
@@ -24,14 +25,15 @@ const download = (response, defaultFilename, {resolve, reject})=>{
 	
 	// Try to extract filename from Content-Disposition header
 	let filename = defaultFilename;
-	const contentDisposition = response.headers["content-disposition"];
-	if(contentDisposition && contentDisposition.includes("filename=")){
-		const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-		if(match != null && match[1]){
-			filename = match[1].replace(/['"]/g, '').trim();
-		}
-	}
+	// const contentDisposition = response.headers["content-disposition"];
+	// if(contentDisposition && contentDisposition.includes("filename=")){
+	// 	const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+	// 	if(match != null && match[1]){
+	// 		filename = match[1].replace(/['"]/g, '').trim();
+	// 	}
+	// }
 	
+
 	// Create a writable stream
 	const fileStream = fs.createWriteStream(filename);
 
