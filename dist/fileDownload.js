@@ -1,6 +1,6 @@
 import * as http from "http"
 import * as fs from "fs"
-import * as url from "url"xs
+import * as url from "url"
 
 async function downloadFile(fileUrl, defaultFilename="dowload"){
     try{
@@ -10,17 +10,17 @@ async function downloadFile(fileUrl, defaultFilename="dowload"){
 	// Make a request to the file URL
 	http.get(parsedUrl, (response)=>{
 	    if(response.statusCode !== 200){
-		throw new Error(`HTTP error: ${response.statusCode}`);
+			throw new Error(`HTTP error: ${response.statusCode}`);
 	    }
 	    
 	    // Try to extract filename from Content-Disposition header
 	    let filename = defaultFilename;
 	    const contentDisposition = response.headers["content-disposition"];
 	    if(contentDisposition && contentDisposition.includes("filename=")){
-		const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-		if(match != null && match[1]){
-		    filename = match[1].replace(/['"]/g, '').trim();
-		}
+			const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+			if(match != null && match[1]){
+		    	filename = match[1].replace(/['"]/g, '').trim();
+			}
 	    }
 	    
 	    // Create a writable stream
@@ -29,17 +29,17 @@ async function downloadFile(fileUrl, defaultFilename="dowload"){
 	    // Pipe the response body to the file 
 	    response.pipe(fileStream);
 
-	    fileStream.on("finish"()=>{
+	    fileStream.on("finish",()=>{
 		console.log(`File downloaded as ${filename}`);
 	    });
 
 	    fileStream.on("error", (error)=>{
-		console.log("Error writin file: " error);
+		console.log("Error writin file: ", error);
 	    });
 	}).on("error", (error)=>{
 	    console.error("Request faild:", error);
 	});
     }catch(error){
-	console.error("Download failed: ", error.message);
+		console.error("Download failed: ", error.message);
     }
 } 
