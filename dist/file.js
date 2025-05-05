@@ -14,9 +14,12 @@ import * as path from "path";
 // const folder = "~/Documents/vault/vault_01/";
 // const archive = "vault_01.zip";
 
-export function zip(folder){
+export function zip(folder, archiveName = undefined){
+	if(!archiveName){
+		archiveName = folder;
+	}
 
-    let exitCode = exec(`tar -cf ${folder}.zip ${folder}`, (error, stdout, stderr)=>{
+    let exitCode = exec(`tar -cf ${archiveName}.zip ${folder}`, (error, stdout, stderr)=>{
 	if(error){
 	    console.log(error.message);
 	    return 1;
@@ -32,7 +35,6 @@ export function zip(folder){
     })
 }
 
-fs.
 
 export function unzip(archive){
     let exitCode = exec(`tar -xf ${folder}.zip`, (error, stdout, stderr)=>{
@@ -58,7 +60,7 @@ export async function getUserFile(userFile){
 	data = await fs.readFile(userFile, "utf8");
     }catch(err){
 	if(typeof err == "object" && err.code=="ENOENT"){
-	    console.log("Error: file not found\nCreating user file");
+	    console.log("Error: user file not found\nCreating user file at " + userFile);
 	    createUserFile(userFile)
 	    data = {};
 	}else{

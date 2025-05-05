@@ -1,4 +1,5 @@
 import {getUserFile, setUserFile} from "./file.js";
+import downloadFile from "./fileDownload.js";
 
 const commands = {
     "pull":pull,
@@ -7,13 +8,12 @@ const commands = {
     "config":undefined
 }
 
-
-
 async function pull(args){
     // say we have to download vault from 192.168.8.107:9000/vault.zip
     const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
     const userData = await getUserFile(userFile);
     
+    // check
     return 0;
 }
 
@@ -23,9 +23,15 @@ async function pull(args){
  * @returns exit status code of command
  */
 export default async function handleCommand(args){
-    const exitCode = await pull(args);
-    return exitCode;
+    const command = args[0].trim().toLowerCase();
+    if(!(command in commands)){
+        console.error(`Command not found: ${command}`);
+        return 1;
+    }
+
+    //const exitCode = await commands[args[0]](args.slice(1));
+    console.log(`Command execute ${command}`);
+    
+    //return exitCode;
+    return 0;
 }
-
-function handleIt(){}
-

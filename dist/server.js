@@ -1,8 +1,3 @@
-// const http = require('http');
-// const fs = require('fs');
-// const path = require('path');
-// const url = require('url');
-
 // TODO: Refactor cus its not mine
 
 import * as http from "http";
@@ -11,7 +6,8 @@ import * as path from "path";
 import * as url from "url";
 
 const PORT = 8000;
-const ROOT_DIR = path.dirname(String(import.meta.dirname));
+const ROOT_DIR = path.join(path.dirname(String(import.meta.dirname)), "shared");
+
 
 const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url);
@@ -65,9 +61,9 @@ const server = http.createServer((req, res) => {
     });
 });
 
-// server.listen(PORT, () => {
-//     console.log(`File server running at http://localhost:${PORT}/`);
-// });
+server.listen(PORT, () => {
+    console.log(`File server running at http://localhost:${PORT}/`);
+});
 
 // Very basic MIME type lookup
 function getMimeType(fileName) {

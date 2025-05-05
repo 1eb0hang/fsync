@@ -2,7 +2,7 @@ import * as http from "http"
 import * as fs from "fs"
 import * as url from "url"
 
-async function downloadFile(fileUrl, defaultFilename="dowload"){
+export default async function downloadFile(fileUrl, defaultFilename="dowload"){
     try{
 	// Parses the URL to enure we handle diffrent protocols (http, https)
 	const parsedUrl = url.parse(fileUrl);
