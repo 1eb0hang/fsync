@@ -51,7 +51,6 @@ export async function unzip(archive){
 		    reject(1);
 		}
 
-		console.log(`stdout: \n${stdout}`);
 		resolve(exitCode);
     	})
 	});

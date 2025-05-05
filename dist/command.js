@@ -31,9 +31,24 @@ async function pull(args){
     );
 
     exitCode = await unzip(path.join(".", userData.file[file].name));
-    // exitCode += await fs.rename(
-    //     path.join(".", "download"), 
-    //     path.join(userData.file[file].destination, file));
+    await fs.rm(userData.file[file].name);
+    console.log(userData.file[file].destination);
+    
+    let fileBase = path.join(".", (userData.file[file].name.split(".").slice(0,-1)).join("."));
+    try{
+        await fs.rename(
+            `${path.dirname(import.meta.dirname)}/web-term`, 
+            userData.file[file].destination);
+    }catch(err){
+        if(err.code == "ENOTEMPTY"){
+            await fs.rm(userData.file[file].destination, 
+                {recursive:true, force:true});
+            
+            await fs.rename(
+                `${path.dirname(import.meta.dirname)}/web-term`, 
+                userData.file[file].destination).catch(err=>console.log(err));
+        }
+    }
 
     return exitCode;
 }
