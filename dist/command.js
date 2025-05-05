@@ -1,3 +1,5 @@
+import * as path from "path";
+
 import {getUserFile, setUserFile} from "./file.js";
 import downloadFile from "./fileDownload.js";
 
@@ -21,13 +23,12 @@ async function pull(args){
         console.log(`No value found maching value \"${file}\"`);
         return 1;
     }
-
-    console.log(userData.file[file]);
-    
+    //http://127.0.0.1:8000/web-term.tar.gz
     // downloadFile(
-    //     `127.0.0.1:8000/${userData.file[file].url}`, // ill change it to be dynamic
-    //     path.join(userData.file[file].destination)
+    //     `http://127.0.0.1:8000/${userData.file[file].url}`// ill change it to be dynamic
     // ); 
+    await downloadFile(new URL(userData.file[file].url,"http://127.0.0.1:8000/"));
+
     return 0;
 }
 
