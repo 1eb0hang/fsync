@@ -57,16 +57,17 @@ export function unzip(archive){
 export async function getUserFile(userFile){
     let data;
     try{
-	data = await fs.readFile(userFile, "utf8");
+		data = await fs.readFile(userFile, "utf8");
+		data = JSON.parse(data);
     }catch(err){
-	if(typeof err == "object" && err.code=="ENOENT"){
-	    console.log("Error: user file not found\nCreating user file at " + userFile);
-	    createUserFile(userFile)
-	    data = {};
-	}else{
-	    console.log(err);
-	    data = undefined;
-	}
+		if(typeof err == "object" && err.code=="ENOENT"){
+		    console.log("Error: user file not found\nCreating user file at " + userFile);
+		    createUserFile(userFile)
+		    data = {};
+		}else{
+		    console.log(err);
+		    data = undefined;
+		}
     }
     return data;
 }
