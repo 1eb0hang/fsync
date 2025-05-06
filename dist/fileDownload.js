@@ -18,7 +18,6 @@ export default function downloadFile(fileUrl, defaultFilename="download"){
 } 
 
 const download = (response, defaultFilename, {resolve, reject})=>{
-	console.log("Something");
 	if(response.statusCode !== 200){
 		throw new Error(`HTTP error: ${response.statusCode}`);
 	}

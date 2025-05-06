@@ -25,31 +25,39 @@ async function pull(args){
         console.log(`No value found maching value \"${file}\"`);
         return 1;
     }
-    exitCode = await downloadFile(
+
+    // Download file
+    exitCode =+ await downloadFile(
         new URL(userData.file[file].url[0],"http://127.0.0.1:8000/"),
         userData.file[file].name
     );
 
-    exitCode = await unzip(path.join(".", userData.file[file].name));
+    // Assume file is an archive
+    exitCode =+ await unzip(path.join(".", userData.file[file].name));
     await fs.rm(userData.file[file].name);
-    console.log(userData.file[file].destination);
     
-    let fileBase = path.join(".", (userData.file[file].name.split(".").slice(0,-1)).join("."));
+    // Movign to destination
     try{
         await fs.rename(
             `${path.dirname(import.meta.dirname)}/web-term`, 
             userData.file[file].destination);
+            console.log("Moved to ", userData.file[file].destination);
     }catch(err){
         if(err.code == "ENOTEMPTY"){
+            console.log("File already exists at destination\n"+
+                    "Reattemping after deleting destination...");
             await fs.rm(userData.file[file].destination, 
                 {recursive:true, force:true});
-            
+
             await fs.rename(
                 `${path.dirname(import.meta.dirname)}/web-term`, 
-                userData.file[file].destination).catch(err=>console.log(err));
+                userData.file[file].destination).catch(err=>{
+                    console.log(err);
+                    exitCode +=1;
+                });
+            }
         }
-    }
-
+        
     return exitCode;
 }
 
