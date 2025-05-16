@@ -94,6 +94,6 @@ export default async function handleCommand(args){
 
     const exitCode = await commands[command](args.slice(1));
     
-    //return exitCode;
-    return 0;
+    return exitCode;
+    // return 0;
 }
