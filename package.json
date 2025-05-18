@@ -1,0 +1,22 @@
+{
+  "name": "sync",
+  "version": "1.0.0",
+  "description": "sync files across diffrent devices",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1eb0hang/sync.git"
+  },
+  "author": "Lebohang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1eb0hang/sync/issues"
+  },
+  "homepage": "https://github.com/1eb0hang/sync#readme",
+  "devDependencies": {
+    "@types/node": "^22.15.18"
+  }
+}

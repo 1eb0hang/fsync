@@ -8,3 +8,5 @@ shared/
 *.tar.xz
 *.tar
 *.zip
+
+node_modules
