@@ -1,71 +1,83 @@
 import { exec } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
-/**
-   tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
-   -> tar -cf vault.zip vault/
-
-   tar -tvf archive.tar         # List all files in archive.tar verbosely.
-   tar -xf archive.tar          # Extract all files from archive.tar.
-   -> tar -xf vault.zip
-*/
+// import { exit } from "process";
+//    tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
+//    -> tar -cf vault.zip vault/
+//    tar -tvf archive.tar         # List all files in archive.tar verbosely.
+//    tar -xf archive.tar          # Extract all files from archive.tar.
+//    -> tar -xf vault.zip
 // const folder = "~/Documents/vault/vault_01/";
 // const archive = "vault_01.zip";
-export function zip(folder, archiveName = undefined) {
+export function zip(folder, archiveName) {
     if (!archiveName) {
         archiveName = folder;
     }
-    let exitCode = exec(`tar -cf ${archiveName}.zip ${folder}`, (error, stdout, stderr) => {
+    let exitCode = 0;
+    exec(`tar -cf ${archiveName}.zip ${folder}`, (error, stdout, stderr) => {
         if (error) {
             console.log(error.message);
-            return 1;
+            exitCode = 1;
+            return;
         }
         if (stderr) {
             //console.error("stderr: " + stderr);
-            return stderr;
+            exitCode = 1;
+            return;
         }
         console.log(`stdout: \n${stdout}`);
-        return 0;
+        return;
     });
+    return exitCode;
 }
 export async function unzip(archive) {
     console.log(`Executing: tar -xf ${archive}`);
-    return new Promise((resolve, reject) => {
-        let exitCode = exec(`tar -xf ${archive}`, (error, stdout, stderr) => {
-            if (error) {
-                console.log(error.message);
-                reject(1);
-            }
-            if (stderr) {
-                console.error("stderr: " + stderr);
-                reject(1);
-            }
-            resolve(exitCode);
-        });
+    let exitCode = 0;
+    exec(`tar -xf ${archive}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(error.message);
+            exitCode += 1;
+            return;
+        }
+        if (stderr) {
+            console.error("stderr: " + stderr);
+            exitCode += 1;
+            return;
+        }
     });
+    return exitCode;
 }
 export async function getUserFile(userFile) {
     let data;
     try {
-        data = await fs.readFile(userFile, "utf8");
-        data = JSON.parse(data);
+        data = JSON.parse(await fs.readFile(userFile, "utf8"));
     }
     catch (err) {
-        if (typeof err == "object" && err.code == "ENOENT") {
-            console.log("Error: user file not found\nCreating user file at " + userFile);
+        if (!(err instanceof Error)) {
+            // Unknown error
+            console.log("Error Unknown");
+            console.log("Could not read userfile: ");
+            console.log(err);
+            return { repo: [], file: {} };
+        }
+        if (err.message.split(" ")[0].toUpperCase().includes("ENOENT")) {
+            // File not found
+            console.log("User file not found");
+            console.log(`Creating user file at ${userFile}`);
             createUserFile(userFile);
-            data = {};
+            return { repo: [], file: {} };
         }
         else {
-            console.log(err);
-            data = undefined;
+            console.log("Unexpected Error:");
+            console.log(err.message);
         }
+        data = { repo: [], file: {} };
     }
     return data;
 }
-export async function setUserFile(userFile, data) {
+export async function setUserFile(file, data) {
     // TODO: check if path to userfile exists
-    await fs.writeFile(userFile, data);
+    await fs.writeFile(file, JSON.stringify(data));
 }
 function createUserFile(filepath) {
     fs.mkdir(path.dirname(filepath), { recursive: true });

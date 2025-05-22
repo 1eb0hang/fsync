@@ -1,11 +1,12 @@
 import * as fs from "fs/promises";
 import * as path from "path";
+import UserFile, {FileData} from "./userfile";
 
-// import {getUserFile, setUserFile, zip, unzip} from "./file.js";
+import {getUserFile, setUserFile, zip, unzip} from "./file.js";
 // import downloadFile from "./fileDownload.js";
+const downloadFile = (...some:any)=>0;
 
-const commands:{[command:string]:(args:string[])=>Promise<number>} = 
-{
+const commands:{[command:string]:(args:string[])=>Promise<number>} = {
     "pull":pull,
     "host":host,
     "list":list,
@@ -14,54 +15,90 @@ const commands:{[command:string]:(args:string[])=>Promise<number>} =
 
 async function pull(args:string[]){
     let exitCode = 0;
-    // // say we have to download vault from 192.168.8.107:9000/vault.zip
-    // const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
-    // const userData = await getUserFile(userFile);
+    
+    // say we have to download vault from 192.168.8.107:9000/vault.zip
+    const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
+    const userData:UserFile = await getUserFile(userFile);
     const file = args[0];
+    
     if(!file){
         console.log("No argument provided for pull");
         return 1;
     }
-    if(!(file in userData.file)){
-        console.log(`No value found maching value \"${file}\"`);
+
+    //TODO : Allow custom url with --url flag
+
+    if(!userData.file){
+        console.log("No file found in user file");
         return 1;
     }
 
-    // // Download file
-    // exitCode =+ await downloadFile(
-    //     new URL(userData.file[file].url[0],"http://127.0.0.1:8000/"),
-    //     userData.file[file].name
-    // );
+    if(!(file in userData.file)){
+        console.log(`No pull path found maching value \"${file}\"`);
+        return 1;
+    }
 
-    // // Assume file is an archive
-    // exitCode =+ await unzip(path.join(".", userData.file[file].name));
-    // await fs.rm(userData.file[file].name);
+    // Download file
+    exitCode += await downloadFile(
+        new URL(userData.file[file].url[0],"http://127.0.0.1:8000/"),
+        userData.file[file].name
+    );
     
-    // // Movign to destination
-    // try{
-    //     await fs.rename(
-    //         `${path.dirname(import.meta.dirname)}/web-term`, 
-    //         userData.file[file].destination);
-    //         console.log("Moved to ", userData.file[file].destination);
-    // }catch(err){
-    //     if(err.code == "ENOTEMPTY"){
-    //         console.log("File already exists at destination\n"+
-    //                 "Reattemping after deleting destination...");
-    //         await fs.rm(userData.file[file].destination, 
-    //             {recursive:true, force:true});
+    // Move file to destination
+    exitCode += await moveToDestination(userData.file[file]);
 
-    //         await fs.rename(
-    //             `${path.dirname(import.meta.dirname)}/web-term`, 
-    //             userData.file[file].destination).catch(err=>{
-    //                 console.log(err);
-    //                 exitCode +=1;
-    //             });
-    //         }
-    //     }
-        
     return exitCode;
 }
 
+async function moveToDestination(file:FileData):Promise<number>{
+    let exitCode = 0;
+    
+    exitCode =+ await unzip(path.join(".", file.name));
+    await fs.rm(file.name);
+
+    if(exitCode>0){
+        // Error from unzip function
+        return exitCode;
+    }
+    
+    // Moving to destination
+    try{
+        await fs.rename(   // path.dirname(import.meta.dirname) -> project root dir
+            `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
+            `${file.destination}/${file.name}`); // TODO: make platform independent
+
+        console.log("Moved to ", file.destination);
+    }catch(err:unknown){
+        if(!(err instanceof Error)){
+            console.log("Error unknown"); // TODO: do something about this
+            return 1;
+        }
+
+        if(!(err.message.split(" ")[0].includes("ENOTEMPTY"))){
+            console.log("Unexpected Error:");
+			console.log(err.message);
+            exitCode += 1;
+        }
+
+        // Assuming that error is because file exists
+        console.log("File already exists at destination\n"+
+                "Reattemping after deleting destination..."); 
+                // TODO: user input to decide whether to delete existing file
+        await fs.rm(file.destination, 
+            {recursive:true, force:true});
+
+        // move to final destination
+        await fs.rename(
+            `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
+            `${file.destination}/${file.name}`)
+            .catch(err=>{
+                console.log("Unexpected Error:");
+                console.log(err);
+                exitCode +=1;
+            });
+    }
+    return exitCode;
+}
 
 async function host(args:string[]){
     console.log("Host function");
