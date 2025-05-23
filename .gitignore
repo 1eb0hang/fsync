@@ -2,3 +2,14 @@
 #*#
 *#*
 user/
+shared/
+
+*.tar.gz
+*.tar.xz
+*.tar
+*.zip
+
+node_modules
+downloads
+temp
+dist
