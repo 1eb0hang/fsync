@@ -1,24 +1,30 @@
 import * as http from "http";
 import * as fs from "fs";
-import * as url from "url";
-export default function downloadFile(fileUrl, defaultFilename = "download") {
+export default function download(repos, file, downloadName) {
     return new Promise((resolve, reject) => {
         let exitCode = 0;
         // Parses the URL to enure we handle diffrent protocols (http, https)
-        const parsedUrl = url.parse(fileUrl.toString());
+        const url = new URL(file.urlPath[0], "http:127.0.0.1:8000");
+        // TODO: either loop through all repos to find path or
+        //		specify specific paths for all files
+        //		- e.g. http://127.0.0.1:8000/cv.tar.gz
+        // downloadName = downloadName?downloadName:file.name;
+        // downloadName ??= file.name;
         // Make a request to the file URL
-        http.get(parsedUrl, res => download(res, defaultFilename, { resolve, reject })).on("error", (error) => {
+        http.get(url, res => downloadFile(res, downloadName || file.name, [resolve, reject]))
+            .on("error", (error) => {
             console.error("Request failed:", error);
             reject(1);
         });
     });
 }
-const download = (response, defaultFilename, { resolve, reject }) => {
+const downloadFile = (response, filename, [resolve, reject]) => {
     if (response.statusCode !== 200) {
+        // if (404) -> file not found at remote
         throw new Error(`HTTP error: ${response.statusCode}`);
     }
     // Try to extract filename from Content-Disposition header
-    let filename = defaultFilename;
+    // let filename = downloadName
     // const contentDisposition = response.headers["content-disposition"];
     // if(contentDisposition && contentDisposition.includes("filename=")){
     // 	const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
@@ -38,9 +44,5 @@ const download = (response, defaultFilename, { resolve, reject }) => {
         console.log("Error writin file: ", error);
         reject(1);
     });
-};
-const neon = (response, resolve) => {
-    console.log("Thing here alses");
-    resolve(1);
 };
 //downloadFile("http://127.0.0.1:8000/web-term.tar.gz");

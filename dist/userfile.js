@@ -22,3 +22,7 @@
 //     }
 // }
 export {};
+// TODO: server should anounce what values are available
+//      like on the server you define keys "vault" and "cv" which
+//      are mapped to some download, and then when pulling you can
+//      query what keys are there, and then pick on to pull from

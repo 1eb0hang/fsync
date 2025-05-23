@@ -1,8 +1,7 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import { getUserFile, unzip } from "./file.js";
-// import downloadFile from "./fileDownload.js";
-const downloadFile = (...some) => 0;
+import downloadFile from "./fileDownload.js";
 const commands = {
     "pull": pull,
     "host": host,
@@ -12,7 +11,9 @@ const commands = {
 async function pull(args) {
     let exitCode = 0;
     // say we have to download vault from 192.168.8.107:9000/vault.zip
-    const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
+    const userFile = "./user/uesrFile.json";
+    // TODO: make userfile changable
+    // TODO: change ./user/uesrFile.json -> ./user/userFile.json
     const userData = await getUserFile(userFile);
     const file = args[0];
     if (!file) {
@@ -29,7 +30,7 @@ async function pull(args) {
         return 1;
     }
     // Download file
-    exitCode += await downloadFile(new URL(userData.file[file].url[0], "http://127.0.0.1:8000/"), userData.file[file].name);
+    exitCode += await downloadFile(userData.repo, userData.file[file]);
     // Move file to destination
     exitCode += await moveToDestination(userData.file[file]);
     return exitCode;

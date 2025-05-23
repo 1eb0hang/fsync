@@ -3,8 +3,7 @@ import * as path from "path";
 import UserFile, {FileData} from "./userfile";
 
 import {getUserFile, setUserFile, zip, unzip} from "./file.js";
-// import downloadFile from "./fileDownload.js";
-const downloadFile = (...some:any)=>0;
+import downloadFile from "./fileDownload.js";
 
 const commands:{[command:string]:(args:string[])=>Promise<number>} = {
     "pull":pull,
@@ -17,7 +16,9 @@ async function pull(args:string[]){
     let exitCode = 0;
     
     // say we have to download vault from 192.168.8.107:9000/vault.zip
-    const userFile = "./user/uesrFile.json"; // TODO: make userfile changable
+    const userFile = "./user/uesrFile.json"; 
+    // TODO: make userfile changable
+    // TODO: change ./user/uesrFile.json -> ./user/userFile.json
     const userData:UserFile = await getUserFile(userFile);
     const file = args[0];
     
@@ -39,10 +40,7 @@ async function pull(args:string[]){
     }
 
     // Download file
-    exitCode += await downloadFile(
-        new URL(userData.file[file].url[0],"http://127.0.0.1:8000/"),
-        userData.file[file].name
-    );
+    exitCode += await downloadFile(userData.repo, userData.file[file]);
     
     // Move file to destination
     exitCode += await moveToDestination(userData.file[file]);
