@@ -45,7 +45,10 @@ export async function unzip(archive:string){
 	console.log(`Executing: tar -xf downloads/${archive} -C downloads`);
 	
 	let exitCode = 0;
-	exec(`tar -xf downloads/${archive} -C downloads`, (error, stdout, stderr)=>{
+	// TODO : have a place where all of these little things that i need are stored in one place
+	//			e.g. userpath, file download path, etc
+	exec(`tar -xf downloads/${archive} -C downloads/__intermediate --strip-components 1`, 
+		(error, stdout, stderr)=>{
 		if(error){
 		    console.log(error.message);
 			exitCode += 1;

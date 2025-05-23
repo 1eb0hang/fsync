@@ -30,11 +30,16 @@ export type UserFile = {
 type FileData = {
     name:string;
     urlPath:string[];
-    destination:string
+    destination:Destination
+}
+
+type Destination = {
+    path:string;
+    basename:string
 }
 
 export default UserFile;
-export {FileData};
+export {FileData, Destination};
 
 // TODO: server should anounce what values are available
 //      like on the server you define keys "vault" and "cv" which
