@@ -1,53 +1,39 @@
-## README - fsync
+# File Sync
 
-tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.
-  -> tar -cf vault.zip vault/
+Webserver that syncs files across computers on the same network.
 
-tar -tvf archive.tar         # List all files in archive.tar verbosely.
-tar -xf archive.tar          # Extract all files from archive.tar.
-  -> tar -xf vault.zip
+## Installation
 
+Clone the repo:
 
+```shell
+git clone https:github.com/1eb0hang/sync.git
+```
+Go into directory and run the following npm commands:
 
-- pull -> download from "repo" and move to "designated" (might include decompression)
-    - repo -> list defined in user file
-    - designated -> associated with file/folder
-
-- host -> copy to "share" folder and host server
-
-user file:
-``` json
-{
-  repo : [
-    "http...",
-    "127.0...",
-    "192...",
-    "https..."
-  ],
-  file:{
-    "vault01":{
-      "url":"vault_01.zip",
-      "destination":"/home/lebo/Documents/vault/"
-    },
-    "emacsInit":{
-      "url":"emacsInit.zip",
-      "destination":"/home/lebo/Documents/config/"
-    }
-  }
-}
+```shell
+npm install
+npm run build
 ```
 
-### example
+Make _fsync_ file executable:
 
-``` shell
-vsync pull vault
+```shell
+chmod +x ./fsync
 ```
 
-1. get args ([pull, vault])
-2. if userfile not exist -> create usercer file
-3. getUserfile
-4. if "vault" not in userFile -> exit(error)
-5. if "vault" not in repo -> exit(error)
-6. download vault.zip
-7. unzip vault.zip -> vault
-8. move vault to "destination"
+## Running the Program
+**Note**: Make sure both computers on the same network
+
+1. Run server on hiosting computer:
+
+```shell
+fsync host
+```
+2. Pull file from hosting computer to second computer
+
+```shell
+fsync pull file
+```
+
+File shorthands and hosting computer options and stored in user/userFile.json
