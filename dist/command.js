@@ -11,10 +11,11 @@ const commands = {
 async function pull(args) {
     let exitCode = 0;
     // say we have to download vault from 192.168.8.107:9000/vault.zip
-    const userFile = "./user/uesrFile.json";
+    const userFile = "./user/userFile.json";
     // TODO: make userfile changable
     // TODO: change ./user/uesrFile.json -> ./user/userFile.json
     const userData = await getUserFile(userFile);
+    // console.log(userData);
     const file = args[0];
     if (!file) {
         console.log("No argument provided for pull");
@@ -44,9 +45,11 @@ async function moveToDestination(file) {
         return exitCode;
     }
     // Moving to destination
+    // TODO: make it move folder/file insted of archive
+    //       delete archive
     try {
         await fs.rename(// path.dirname(import.meta.dirname) -> project root dir
-        `${path.dirname(import.meta.dirname)}/shared/${file.name}`, `${file.destination}/${file.name}`); // TODO: make platform independent
+        `${path.dirname(import.meta.dirname)}/shared/${file.name}`, `${file.destination}/${file.name}`); // TODO: make platform independent path
         console.log("Moved to ", file.destination);
     }
     catch (err) {
