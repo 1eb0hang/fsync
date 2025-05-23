@@ -52,52 +52,54 @@ async function pull(args:string[]){
 async function moveToDestination(file:FileData):Promise<number>{
     let exitCode = 0;
     
-    exitCode =+ await unzip(path.join(".", file.name));
-    await fs.rm(file.name);
+    exitCode =+ await unzip(file.name);
+    // await fs.rm(file.name);
 
-    if(exitCode>0){
-        // Error from unzip function
-        return exitCode;
-    }
+    // if(exitCode>0){
+    //     // Error from unzip function
+    //     return exitCode;
+    // }
     
-    // Moving to destination
-    // TODO: make it move folder/file insted of archive
-    //       delete archive
-    try{
-        await fs.rename(   // path.dirname(import.meta.dirname) -> project root dir
-            `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
-            `${file.destination}/${file.name}`); // TODO: make platform independent path
+    // // Moving to destination
+    // // TODO: make it move folder/file insted of archive
+    // //       delete archive
+    // // TODO: also it deletes archive from shared folder
+    // try{
+    //     await fs.rename(   // path.dirname(import.meta.dirname) -> project root dir
+    //         `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
+    //         `${file.destination}/${file.name}`); // TODO: make platform independent path
 
-        console.log("Moved to ", file.destination);
-    }catch(err:unknown){
-        if(!(err instanceof Error)){
-            console.log("Error unknown"); // TODO: do something about this
-            return 1;
-        }
+    //     console.log("Moved to ", file.destination);
+    // }catch(err:unknown){
+    //     if(!(err instanceof Error)){
+    //         console.log("Error unknown"); // TODO: do something about this
+    //         return 1;
+    //     }
 
-        if(!(err.message.split(" ")[0].includes("ENOTEMPTY"))){
-            console.log("Unexpected Error:");
-			console.log(err.message);
-            exitCode += 1;
-        }
+    //     if(!(err.message.split(" ")[0].includes("ENOTEMPTY"))){
+    //         console.log("Unexpected Error:");
+	// 		console.log(err.message);
+    //         exitCode += 1;
+    //     }
 
-        // Assuming that error is because file exists
-        console.log("File already exists at destination\n"+
-                "Reattemping after deleting destination..."); 
-                // TODO: user input to decide whether to delete existing file
-        await fs.rm(file.destination, 
-            {recursive:true, force:true});
+    //     // Assuming that error is because file exists
+    //     console.log("File already exists at destination\n"+
+    //             "Reattemping after deleting destination..."); 
+    //             // TODO: user input to decide whether to delete existing file
+    //     await fs.rm(file.destination, 
+    //         {recursive:true, force:true});
 
-        // move to final destination
-        await fs.rename(
-            `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
-            `${file.destination}/${file.name}`)
-            .catch(err=>{
-                console.log("Unexpected Error:");
-                console.log(err);
-                exitCode +=1;
-            });
-    }
+    //     // move to final destination
+    //     await fs.rename(
+    //         `${path.dirname(import.meta.dirname)}/shared/${file.name}`, 
+    //         `${file.destination}/${file.name}`)
+    //         .catch(err=>{
+    //             console.log("Unexpected Error:");
+    //             console.log(err);
+    //             exitCode +=1;
+    //         });
+    // }
+    
     return exitCode;
 }
 

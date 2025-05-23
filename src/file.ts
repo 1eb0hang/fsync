@@ -19,7 +19,7 @@ export function zip(folder:string, archiveName?:string|null){
 	if(!archiveName){
 		archiveName = folder;
 	}
-
+	
     let exitCode = 0;
 	exec(`tar -cf ${archiveName}.zip ${folder}`, (error, stdout, stderr)=>{
 		if(error){
@@ -42,10 +42,10 @@ export function zip(folder:string, archiveName?:string|null){
 }
 
 export async function unzip(archive:string){
-	console.log(`Executing: tar -xf ${archive}`);
+	console.log(`Executing: tar -xf downloads/${archive} -C downloads`);
 	
 	let exitCode = 0;
-	exec(`tar -xf ${archive}`, (error, stdout, stderr)=>{
+	exec(`tar -xf downloads/${archive} -C downloads`, (error, stdout, stderr)=>{
 		if(error){
 		    console.log(error.message);
 			exitCode += 1;
@@ -57,7 +57,6 @@ export async function unzip(archive:string){
 			exitCode += 1;
 			return;
 		}
-		
     });
 	return exitCode;
 }

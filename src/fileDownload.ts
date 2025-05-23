@@ -3,6 +3,7 @@ import * as fs from "fs"
 import * as url from "url"
 import { FileData } from "./userfile";
 
+// TODO: move download path to be in downloads folder
 export default function download(repos:string[], file:FileData, downloadName?:string):Promise<number>{
 	return new Promise((resolve, reject)=>{
 		let exitCode = 0;
@@ -47,7 +48,7 @@ const downloadFile = (response:http.IncomingMessage,
 	
 
 	// Create a writable stream
-	const fileStream = fs.createWriteStream(filename);
+	const fileStream = fs.createWriteStream(`downloads/${filename}`);
 
 	// Pipe the response body to the file 
 	response.pipe(fileStream);
