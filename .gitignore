@@ -9,7 +9,7 @@ shared/
 *.tar
 *.zip
 
-node_modules
 downloads
 temp
-dist
+
+target

@@ -1,3 +1,4 @@
 
-dir=$(dirname $(realpath $0))
-node "${dir}/dist/index.js" $@
+# dir=$(dirname $(realpath $0))
+# node "${dir}/dist/main.js" $@
+cd target/classes && java org.lebo.App
