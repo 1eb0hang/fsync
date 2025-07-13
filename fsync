@@ -1,4 +1,4 @@
 
 # dir=$(dirname $(realpath $0))
 # node "${dir}/dist/main.js" $@
-cd target/classes && java org.lebo.App
+cd target/classes && java org.lebo.fsync.App
